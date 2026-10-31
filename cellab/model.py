@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -212,6 +212,30 @@ class Automaton(BaseModel):
         description="Ordered list of transition rules.",
     )
 
+    # -- optional library fields (Member 2) ------------------------
+    description: Optional[str] = Field(
+        default=None,
+        description="Natural-language description of the automaton.",
+    )
+    symbols: Optional[Dict[str, str]] = Field(
+        default=None,
+        description=(
+            "One display character per state, e.g. {\"A\": \"a\"}. "
+            "Used to read and print worlds as text."
+        ),
+    )
+    templates: Dict[str, List[str]] = Field(
+        default_factory=dict,
+        description=(
+            "Named starting patterns, written with the symbols, one "
+            "string per row, e.g. {\"glider\": [\".#.\", \"..#\", \"###\"]}."
+        ),
+    )
+    default_world: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Recommended initial world (size, init mode, ...).",
+    )
+
     model_config = {"populate_by_name": True}
 
     # -- validators ------------------------------------------------
@@ -303,6 +327,41 @@ class Automaton(BaseModel):
                             f"{prefix}.pattern[{pi}]: state '{ps}' "
                             f"is not declared in states."
                         )
+
+        # 3. symbols: one distinct single character for every state
+        if self.symbols is not None:
+            if set(self.symbols) != state_set:
+                raise ValueError(
+                    f"symbols must define exactly one symbol for every "
+                    f"state {self.states}, got {list(self.symbols)}."
+                )
+            chars = list(self.symbols.values())
+            for ch in chars:
+                if len(ch) != 1:
+                    raise ValueError(
+                        f"symbols: '{ch}' must be a single character."
+                    )
+            if len(set(chars)) != len(chars):
+                raise ValueError("symbols: two states share a symbol.")
+
+        # 4. templates: rectangular and written with known symbols
+        if self.templates:
+            if self.symbols is None:
+                raise ValueError("templates require 'symbols' to be defined.")
+            known = set(self.symbols.values())
+            for tname, rows in self.templates.items():
+                if not rows or len({len(r) for r in rows}) != 1:
+                    raise ValueError(
+                        f"templates['{tname}']: rows must be non-empty "
+                        f"and of equal length."
+                    )
+                for r in rows:
+                    for ch in r:
+                        if ch not in known:
+                            raise ValueError(
+                                f"templates['{tname}']: unknown symbol "
+                                f"'{ch}'."
+                            )
 
         return self
 
