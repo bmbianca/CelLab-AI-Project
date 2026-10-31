@@ -212,7 +212,7 @@ class Automaton(BaseModel):
         description="Ordered list of transition rules.",
     )
 
-    # -- optional library fields  ------------------------
+    # -- optional library fields (Member 2) ------------------------
     description: Optional[str] = Field(
         default=None,
         description="Natural-language description of the automaton.",
@@ -220,7 +220,7 @@ class Automaton(BaseModel):
     symbols: Optional[Dict[str, str]] = Field(
         default=None,
         description=(
-            "One display character per state, e.g. {\"TREE\": \"T\"}. "
+            "One display character per state, e.g. {\"A\": \"a\"}. "
             "Used to read and print worlds as text."
         ),
     )
