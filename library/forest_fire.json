@@ -1,0 +1,19 @@
+{
+  "name": "Forest Fire",
+  "description": "Each cell is empty, a tree or on fire. A burning cell becomes empty. A tree catches fire if at least one of its 8 neighbours is burning. A tree can also be struck by lightning and catch fire with probability 0.001, even with no burning neighbour. An empty cell grows a new tree with probability 0.05. The world wraps around at the edges.",
+  "states": ["EMPTY", "TREE", "FIRE"],
+  "default_state": "EMPTY",
+  "neighborhood": "moore",
+  "boundary": "toroidal",
+  "rules": [
+    {"from": "FIRE",  "to": "EMPTY"},
+    {"from": "TREE",  "to": "FIRE", "if": {"count": "FIRE", "op": ">=", "value": 1}},
+    {"from": "TREE",  "to": "FIRE", "probability": 0.001},
+    {"from": "EMPTY", "to": "TREE", "probability": 0.05}
+  ],
+  "symbols": {"EMPTY": ".", "TREE": "T", "FIRE": "F"},
+  "templates": {
+    "spark": ["F"]
+  },
+  "default_world": {"size": [30, 60], "init": "random", "density": {"TREE": 0.6, "FIRE": 0.01}}
+}

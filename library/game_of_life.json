@@ -1,0 +1,20 @@
+{
+  "name": "Game of Life",
+  "description": "Each cell is either dead or alive. A live cell with fewer than two live neighbours dies (underpopulation). A live cell with more than three live neighbours dies (overpopulation). A live cell with two or three live neighbours stays alive. A dead cell with exactly three live neighbours becomes alive (reproduction). Neighbours are the 8 surrounding cells and the world wraps around at the edges.",
+  "states": ["DEAD", "ALIVE"],
+  "default_state": "DEAD",
+  "neighborhood": "moore",
+  "boundary": "toroidal",
+  "rules": [
+    {"from": "ALIVE", "to": "DEAD",  "if": {"count": "ALIVE", "op": "<", "value": 2}},
+    {"from": "ALIVE", "to": "DEAD",  "if": {"count": "ALIVE", "op": ">", "value": 3}},
+    {"from": "DEAD",  "to": "ALIVE", "if": {"count": "ALIVE", "op": "==", "value": 3}}
+  ],
+  "symbols": {"DEAD": ".", "ALIVE": "#"},
+  "templates": {
+    "blinker": ["###"],
+    "block":   ["##", "##"],
+    "glider":  [".#.", "..#", "###"]
+  },
+  "default_world": {"size": [20, 20], "init": "template", "template": "glider"}
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Brian's Brain",
+  "description": "Each cell is off, firing or dying. A firing cell always becomes dying in the next generation. A dying cell always becomes off. An off cell starts firing if exactly two of its 8 neighbours are firing; otherwise it stays off. The world wraps around at the edges.",
+  "states": ["OFF", "FIRING", "DYING"],
+  "default_state": "OFF",
+  "neighborhood": "moore",
+  "boundary": "toroidal",
+  "rules": [
+    {"from": "FIRING", "to": "DYING"},
+    {"from": "DYING",  "to": "OFF"},
+    {"from": "OFF",    "to": "FIRING", "if": {"count": "FIRING", "op": "==", "value": 2}}
+  ],
+  "symbols": {"OFF": ".", "FIRING": "#", "DYING": "o"},
+  "templates": {
+    "glider": ["##", "oo"]
+  },
+  "default_world": {"size": [40, 40], "init": "random", "density": {"FIRING": 0.2}}
+}
