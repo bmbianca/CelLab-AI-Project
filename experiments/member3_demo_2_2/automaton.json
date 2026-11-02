@@ -1,0 +1,11 @@
+{
+  "boundary": "toroidal",
+  "default_state": "A",
+  "name": "Member 3 persistence demo",
+  "neighborhood": "moore",
+  "rules": [],
+  "states": [
+    "A",
+    "B"
+  ]
+}
