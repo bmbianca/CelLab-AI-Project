@@ -15,7 +15,9 @@ from typing import List, Union
 from cellab.model import Automaton, load_automaton_file
 
 # <project root>/library  (this file lives in <project root>/cellab/)
-LIBRARY_DIR = Path(__file__).resolve().parent.parent / "library"
+LIBRARY_DIR = Path(__file__).resolve().parent / "library"
+if not LIBRARY_DIR.exists():
+    LIBRARY_DIR = Path(__file__).resolve().parent.parent / "library"
 
 
 def list_automata(library_dir: Union[str, Path] = LIBRARY_DIR) -> List[str]:

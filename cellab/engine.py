@@ -14,12 +14,15 @@ count_neighbors
 step
     Compute the next generation of the grid by applying the automaton's
     rules in order, using boolean masks (no cell-by-cell loops).
+run
+    Execute the simulation for a given number of generations, with an
+    optional per-step callback and strict seed-based reproducibility.
 """
 
 from __future__ import annotations
 
 import operator
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional, Union
 
 import numpy as np
 from scipy.signal import convolve2d
@@ -241,3 +244,50 @@ def step(
         changed_mask |= mask
 
     return new_grid
+
+
+# ────────────────────────────────────────────────────────────────────
+# Run loop
+# ────────────────────────────────────────────────────────────────────
+
+def run(
+    grid: np.ndarray,
+    automaton: Automaton,
+    generations: int,
+    seed: Union[int, None] = None,
+    on_step: Optional[Callable[[int, np.ndarray], None]] = None,
+) -> np.ndarray:
+    """Execute the simulation for *generations* steps.
+
+    Parameters
+    ----------
+    grid : np.ndarray
+        Initial 2-D grid of integer state indices (``shape = (H, W)``).
+    automaton : Automaton
+        The automaton definition (states, rules, neighbourhood, …).
+    generations : int
+        Number of simulation steps to run.
+    seed : int | None
+        Seed for the random number generator.  The same seed always
+        produces the same sequence of grids, regardless of platform.
+        ``None`` gives non-reproducible randomness.
+    on_step : callable, optional
+        If provided, called as ``on_step(t, grid)`` immediately after
+        generation *t* is computed (``t`` runs from ``1`` to
+        ``generations``).  Useful for recording history, rendering
+        frames, or collecting statistics.
+
+    Returns
+    -------
+    np.ndarray
+        The grid after all *generations* have been applied.
+    """
+    rng = np.random.default_rng(seed)
+
+    for t in range(1, generations + 1):
+        grid = step(grid, automaton, rng)
+
+        if on_step is not None:
+            on_step(t, grid)
+
+    return grid

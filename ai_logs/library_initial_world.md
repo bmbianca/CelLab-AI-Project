@@ -19,7 +19,7 @@ generation, and the verification of the offline NLP parser.
 | 1 | **Zero Hardcoding** — no automaton or state name anywhere in code | ✅ Verified |
 | 2 | 3 mandatory automata in JSON v2 format (no `dimensions` field) | ✅ Implemented |
 | 3 | Each automaton carries `description`, `symbols`, `templates`, `default_world` | ✅ Implemented |
-| 4 | `list_automata()` / `load_automaton(name)` reading from `library/` | ✅ Implemented |
+| 4 | `list_automata()` / `load_automaton(name)` reading from `../cellab/library` | ✅ Implemented |
 | 5 | `random_world` with per-state density and a seed | ✅ Implemented |
 | 6 | Template-based world (patterns stored in the automaton's JSON, not in code) | ✅ Implemented |
 | 7 | `from_text` / `to_text` round-trip for the `..F..` world format | ✅ Implemented |
@@ -76,9 +76,9 @@ offline (no-internet, no-cost) parser path works.
 
 | File | Purpose |
 |------|---------|
-| `library/game_of_life.json` | Game of Life — deterministic, 2 states |
-| `library/brians_brain.json` | Brian's Brain — 3 states |
-| `library/forest_fire.json` | Forest Fire — stochastic (probabilities + seed) |
+| `../cellab/library` | Game of Life — deterministic, 2 states |
+| `../cellab/library` | Brian's Brain — 3 states |
+| `../cellab/library` | Forest Fire — stochastic (probabilities + seed) |
 | `cellab/library.py` | Library loader: `list_automata`, `load_automaton` |
 | `cellab/world.py` | Initial-world generation: random / template / text |
 | `cellab/model.py` | Added optional `symbols`, `templates`, `default_world` fields |
